@@ -1,0 +1,73 @@
+{# templates/register/index.html.twig #}
+{% extends "base.html.twig" %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block css %}
+        <link href="{{ asset('css/register-style.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block title%}
+    Register
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8" id="register-box">
+            <div class="card mb-3 mt-5">
+                <div class="card-header">
+                        Register
+                </div>
+
+                <div class="card-body">
+                    {% if passwordError %}
+                        <div class="alert alert-danger" role="alert">
+                            <b>ERROR:</b>{{passwordError}}
+                        </div>
+                    {% endif %}
+
+                    {% if emailFound %}
+                        <div class="alert alert-danger" role="alert">
+                            <b>ERROR:</b>{{emailFound}}
+                        </div>
+                    {% endif %}
+
+                    {{ form_start(form) }}
+                        <div class="form_group">
+                            <div class="col-md-12 mb-3">
+                                {{ form_row(form.firstName, {'attr': {'class': 'form-control', 'placeholder': 'John'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="form_group">
+                            <div class="col-md-12 mb-3">
+                                {{ form_row(form.lastName, {'attr': {'class': 'form-control', 'placeholder': 'Doe'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="form_group">
+                            <div class="col-md-12 mb-3">
+                                {{ form_row(form.emailAddress, {'attr': {'class': 'form-control', 'placeholder': 'name@email.com'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="form_group">
+                            <div class="col-md-12 mb-3">
+                                {{ form_row(form.plainPassword, {'attr': {'class': 'form-control', 'pattern': '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,})', 'title': 'Password must contain at least one of each of the following: uppercase letter, lowercase letter, number, special character. It also must be 8+ characters long.'}}) }}
+                            </div>
+                        </div>
+
+                        <center>
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </center>
+
+                        <hr>
+                        <center>
+                            <a href="/" class="btn btn-primary btn-secondary" role="button" aria-pressed="true">Login</a>
+                        </center>
+                    </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{# templates/forms/fields.html.twig #}
+
+{% block form_row %}
+	<label for="{{ form.name.vars.id }}"
+	    class="{{ form.name.vars.required ? 'required' }}">
+	    {{ form.name.vars.label }}
+	</label>
+{% endblock form_row %}

@@ -1,0 +1,169 @@
+{# templates/register/index.html.twig #}
+{% extends "base.html.twig" %}
+
+{% block js %}
+
+<script type="text/javascript">
+
+var rows = {{ rows }};
+$(document).ready(function(){
+	$("#add-card").click(function() {
+		rows++;
+
+	    var $tr    = $('.tr_clone').first();
+	    var $clone = $tr.clone().prop('id','card'+rows);
+	    $clone.find(':text').val('');
+	    $clone.find(':input[type="number"]').val('');
+	    $('#cards-table').append($clone);
+	});
+
+	$('#cards-table').on('click','tr .delete-row',function(e){
+		//Delete row if this isn't the last one
+		if($('.delete-row').length > 1){
+			$(this).closest('tr').remove();
+		}
+	});
+});
+
+</script>
+{% endblock %}
+
+{% block title%}
+    Create Order
+{% endblock %}
+
+{% block content %}
+    {% if successMsg != '' %}
+        <div class="alert alert-success" role="alert">
+            {{successMsg}}
+        </div>
+    {% endif %}
+
+    	<form action="/orders" method="post">
+	    	<div class="card">
+                <div class="card-header">
+                    Create Order
+                </div>
+
+	    		<div class="card-body">
+					<table class="table table-striped table-wrapper-scroll-x" id="cards-table">
+						<thead>
+							<tr>
+								<th>Player</th>
+								<th scope="col-md-2">Sport</th>
+								<th scope="col-md-2">Year</th>
+								<th scope="col-md-2">Manufacturer</th>
+								<th scope="col-md-1">Card #</th>
+								<th scope="col-md-1">Set</th>
+								<th scope="col-md-2">Variation</th>
+								<th scope="col-md-2">Value</th>
+								<th scope="col-md-1"></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for i in 1..rows %}
+
+								<tr id="card{{ i }}" class="tr_clone">
+									<td>
+										<div class="form-group">
+											<input type="text" name="playerName[]" class="form-control" 
+											{% if cards is defined %} value="{{ cards[i-1]['playerName'] }}" {% endif %}
+											required>
+										</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<select name="sport[]" class="form-control form-select">
+												{% for sport in sports %}
+													<option value="{{ sport }}"
+													{% if cards is defined and cards[i-1]['sport'] == sport %} selected {% endif %}
+													required>
+														{{ sport }}
+													</option>
+												{% endfor %}
+								      		</select>
+							      		</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<select name="year[]" class="form-control form-select">
+												{% for year in years %}
+													<option value="{{ year }}"
+													{% if cards is defined and cards[i-1]['year'] == year %} selected {% endif %}
+													required>
+														{{ year }}
+													</option>
+												{% endfor %}
+								      		</select>
+							      		</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<select name="manufacturer[]" class="form-control form-select">
+												{% for manufacturer in manufacturers %}
+													<option value="{{ manufacturer.id }}"
+													{% if cards is defined and cards[i-1]['manufacturer'] == manufacturer.id %} selected {% endif %}
+													required>
+														{{ manufacturer.name }}
+													</option>
+												{% endfor %}
+								      		</select>
+							      		</div>
+									</td>
+									<td> 
+										<div class="form-group">
+											<input type="text" name="number[]" class="form-control"
+											{% if cards is defined %} value="{{ cards[i-1]['number'] }}" {% endif %}
+											required>
+							      		</div>
+									</td>
+									<td>
+										<div class="form-group">
+								  			<input type="text" name="setName[]" class="form-control"
+											{% if cards is defined %} value="{{ cards[i-1]['setName'] }}" {% endif %}
+											required>
+							      		</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<input type="text" name="variation[]" class="form-control"
+											{% if cards is defined %} value="{{ cards[i-1]['variation'] }}" {% endif %}
+											required>
+							      		</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<input type="number" name="value[]" min="0" step=".01" class="form-control"
+											{% if cards is defined %} value="{{ cards[i-1]['value'] }}" {% endif %}
+											required>
+							      		</div>
+									</td>
+									<td>
+						  				<div class="btn btn-danger delete-row">Delete</div>
+									</td>
+									<td>
+										{% if cards is defined and cards[i-1]['errorStr'] != "" %} {{ cards[i-1]['errorStr'] }} {% endif %}
+									</td>
+								</tr>
+
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<br>
+
+			<center>
+		  		<div id='add-card' class="btn btn-success">Add New Card</div>
+			</center>
+			
+			<hr>
+
+			<br>
+
+		  	<center>
+		  		<button type="submit" class="btn btn-primary">Submit Order</button>
+		  	</center>
+		</form>
+{% endblock %}

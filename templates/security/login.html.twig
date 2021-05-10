@@ -1,0 +1,58 @@
+{# templates/user/login.html.twig #}
+{% extends "base.html.twig" %}
+
+{% block css %}
+        <link href="{{ asset('css/login-style.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block title%}
+    Login
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8" id="login-box">
+            <div class="card">
+                <div class="card-header">
+                    Login
+                </div>
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                {% if app.user %}
+                    <div class="mb-3">
+                        You are logged in as {{ app.user.username }}, <a href="{{ path('logout') }}">Logout</a>
+                    </div>
+                {% endif %}
+
+                <form method="post" action="/">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="_username" value="{{ last_username }}"placeholder="email@example.com" required>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="_password" placeholder="Password" required>
+                        </div>
+                        <br>
+                        
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <center>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </center>
+
+                        <hr>
+                        <center>
+                            <a href="/register" class="btn btn-primary btn-secondary" role="button" aria-pressed="true">Register</a>
+                        </center>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

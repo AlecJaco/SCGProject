@@ -1,0 +1,31 @@
+html,
+body {
+  background-color: #f5f5f5;
+  width:100%;
+}
+
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#nav-header
+{
+  margin-bottom: 60px;
+}
+
+.nav-menu{
+  float:left;
+}
+
+.table-wrapper-scroll-x
+{
+	position:relative;
+	width:100%;
+	overflow:auto;
+	display: block;
+	table-layout: fixed;
+    word-wrap: break-word;
+}
