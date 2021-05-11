@@ -63,8 +63,8 @@ class OrderController extends AbstractController
             for($i = 0; $i < $rows; $i++)
             {
                 $card = [
-                    "playerName" => $playerNames[$i],
                     "sport" => $sports[$i],
+                    "playerName" => $playerNames[$i],
                     "year" => $years[$i],
                     "manufacturer" => $manufacturers[$i],
                     "number" => $numbers[$i],

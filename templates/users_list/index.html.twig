@@ -12,50 +12,52 @@
         </div>
 
 		<div class="card-body">
-			<table class="table table-striped" id="cards-table">
-				<thead>
-					<tr>
-						<th scope="col-sm-2">First Name</th>
-						<th scope="col-sm-2">Last Name</th>
-						<th scope="col-sm-3">Email Address</th>
-						<th scope="col-sm-2">Orders Placed</th>
-						<th scope="col-sm-1">Cards Graded</th>
-						<th scope="col-sm-2">Security Level</th>
-						<th scope="col-sm-1">View</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for user in users %}
+	    	<div class="table-responsive">
+				<table class="table table-striped" id="cards-table">
+					<thead>
+						<tr>
+							<th class="column-medium">First Name</th>
+							<th class="column-medium">Last Name</th>
+							<th class="column-large">Email Address</th>
+							<th class="column-small">Orders Placed</th>
+							<th class="column-small">Cards Graded</th>
+							<th class="column-medium">Security Level</th>
+							<th class="column-medium">View</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for user in users %}
 
-					<tr>
-						<td>
-							{{ user.first_name }}
-						</td>
-						<td>
-							{{ user.last_name }}
-						</td>
-						<td>
-							{{ user.email_address }}
-						</td>
-						<td>
-							{{ user.orders }}
-						</td>
-						<td> 
-							{{ user.cards }}
-						</td>
-						<td> 
-							{% if 'ROLE_OWNER' in user.roles %} Owner {% endif %}
-							{% if 'ROLE_MANAGER' in user.roles %} Manager {% endif %}
-							{% if 'ROLE_USER' in user.roles %} User {% endif %}
-						</td>
-						<td>
-							<a class="btn btn-primary" href="/view-orders/{{ user.user_id }}" role="button">View Orders</a>
-						</td>
-					</tr>
+						<tr>
+							<td>
+								{{ user.first_name }}
+							</td>
+							<td>
+								{{ user.last_name }}
+							</td>
+							<td>
+								{{ user.email_address }}
+							</td>
+							<td>
+								{{ user.orders }}
+							</td>
+							<td> 
+								{{ user.cards }}
+							</td>
+							<td> 
+								{% if 'ROLE_OWNER' in user.roles %} Owner {% endif %}
+								{% if 'ROLE_MANAGER' in user.roles %} Manager {% endif %}
+								{% if 'ROLE_USER' in user.roles %} User {% endif %}
+							</td>
+							<td>
+								<a class="btn btn-primary" href="/view-orders/{{ user.user_id }}" role="button">View Orders</a>
+							</td>
+						</tr>
 
-					{% endfor %}
-				</tbody>
-			</table>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 {% endblock %}

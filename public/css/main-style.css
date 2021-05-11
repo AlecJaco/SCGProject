@@ -29,3 +29,18 @@ hr {
 	table-layout: fixed;
     word-wrap: break-word;
 }
+
+.column-small
+{
+  min-width: 125px;
+}
+
+.column-medium
+{
+  min-width: 160px;
+}
+
+.column-large
+{
+  min-width: 185px;
+}
