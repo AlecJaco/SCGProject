@@ -65,11 +65,13 @@ DirectoryIndex index.php
     </IfModule>
 </IfModule>
 
+Listen 8080
+Listen 80
 <VirtualHost *:80>
     # ...
-    DocumentRoot /var/www/html/SCGProject/public
+    DocumentRoot /var/www/SCGProject/public
 
-    <Directory /var/www/html/SCGProject/public>
+    <Directory /var/www/SCGProject/public>
         AllowOverride None
 
         # Copy .htaccess contents here
