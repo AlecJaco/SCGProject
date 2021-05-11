@@ -11,18 +11,20 @@ class SecurityController extends AbstractController
 {
     /**
      * @Route("/", name="login")
+     * Login page. Allows users to sign in to their account and access the order functionality
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        //Already signed in, redirect to the orders page
         if ($this->getUser()) 
         {
              return $this->redirectToRoute('orders');
         }
 
-        // get the login error if there is one
+        //If there is an error logging in, then get the authentication error to pass to twig
         $error = $authenticationUtils->getLastAuthenticationError();
         
-        // last username entered by the user
+        //Gets the last username for this user, to make logging in easier
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', 
@@ -35,6 +37,7 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/logout", name="logout")
+     * Logout page. Allows the user to end their current session and be re-directed to the login page
      */
     public function logout()
     {

@@ -17,12 +17,21 @@ class CreateUserController extends AbstractController
 {
 	/**
 	* @Route("/create-user", name="create-user")
+	* Create user page. Setup a new user account and assign them a role from the roles dropdown.
+	* You can assign any role that is under your security level
 	*/
 	public function createUser(Request $request, UserPasswordEncoderInterface $passwordEncoder)
 	{
+		//Only allow logged in users to see this page
+        if (!$this->getUser()) 
+        {
+             return $this->redirectToRoute('login');
+        }
+        
+		//Must have the role of at least manager to access this page
 		$this->denyAccessUnlessGranted('ROLE_MANAGER');
 
-		//Create the new user form
+		//Generate the create user form
 		$user = new Users();
 		$form = $this->createForm(CreateUserType::class, $user);
 
@@ -39,13 +48,14 @@ class CreateUserController extends AbstractController
 		if($form->isSubmitted() && $form->isValid())
 		{
 			//Make sure password passes all constraints
+			//Make sure password fits all criteria
 			$passwordError = $user->checkPassword();
 			if($passwordError == "")
 			{
 				//Hash password
 				$user->setPassword($passwordEncoder->encodePassword($user, $user->getPlainPassword()));
 
-				//Check if this user already exists in the database
+				//Check if this email address already exists in the database
 				$query =
 					'
 					SELECT 
@@ -60,7 +70,8 @@ class CreateUserController extends AbstractController
 				$statement->bindValue('email',$user->getEmailAddress());
 				$statement->execute();
 				$rows = intval($statement->fetch()['count']);
-				//Email address not found, create user
+
+				//Email address not found, we can create the user now
 				if($rows == 0)
 				{
 					//Save user by adding them to the DB
@@ -69,13 +80,14 @@ class CreateUserController extends AbstractController
 
 					$successMsg = "Successfully created new user!";
 
-					//Reset form values so that more users can be created
+					//Reset form values so that page is ready for more users to be created
 					unset($user);
 					unset($form);
 					$user = new Users();
 					$form = $this->createForm(CreateUserType::class, $user);
 				}
 				else
+
 				{
 					$emailFound = "This email address is already taken, please enter a new one";
 				}

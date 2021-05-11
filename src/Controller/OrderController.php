@@ -16,7 +16,8 @@ class OrderController extends AbstractController
 {
     /**
      * @Route("/orders", name="ordersPost", methods="POST")
-     * Handle post request, verify that all information entered is valid. If it isn't give an error. If it is then create order
+     * Create order page. Create an order consisting of 1..n cards
+     * This view handles forms that have been posted. Verify information is valid for each card in the order
      */
     public function createOrderPost(Request $request): Response
     {
@@ -32,8 +33,8 @@ class OrderController extends AbstractController
         $playerNames = $request->get("playerName");
         $rows = count($playerNames);
 
-        //Get official list of sports, manufacturers, and years in array form
-        $officialSports = ["Football","Baseball","Basketball","Hockey","Soccer"];
+        //Get official list of options for sports, manufacturers, and years in array form
+        $officialSports = $this->getSports();
         $officialYears = $this->getYears();
         $officialManufacturers = $this->getManufacturers();
 
@@ -56,7 +57,9 @@ class OrderController extends AbstractController
             //Keeps track of how many rows of input contained errors
             $errors = 0;
 
-            //Create an array of cards from the post data
+            /*
+            * Each section of data is separated into it's own array, iterate through it and create an array for each card row
+            */
             for($i = 0; $i < $rows; $i++)
             {
                 $card = [
@@ -92,6 +95,7 @@ class OrderController extends AbstractController
             $entityManager->persist($order);
             $entityManager->flush();
 
+            //Add all the cards from this order to the database
             foreach($cards as $cardInfo)
             {
                 //Get manufacturer object
@@ -124,7 +128,8 @@ class OrderController extends AbstractController
 
     /**
      * @Route("/orders", name="orders")
-     * Generates blank form with 1 row
+     * Create order page. This will generate the order form with 1 single card. 
+     * Users can dynamically add/remove additional cards using the jquery buttons
      */
     public function createOrderView(): Response
     {
@@ -135,7 +140,7 @@ class OrderController extends AbstractController
         }
 
         //Get official list of sports, manufacturers, and years in array form
-        $officialSports = ["Football","Baseball","Basketball","Hockey","Soccer"];
+        $officialSports = $this->getSports();
         $officialYears = $this->getYears();
         $officialManufacturers = $this->getManufacturers();
 
@@ -143,8 +148,7 @@ class OrderController extends AbstractController
     }
 
     /**
-    * Sets up the variables that should be sent to twig based on whether form should be blank, contain filled in rows, etc.
-    * Then will render the view
+    * Helper function that sets up the variables that should be sent to twig based on whether form should be blank, contain filled in rows, etc.
     */
     private function createView(array $officialSports, array $officialYears, array $officialManufacturers, int $rows, array $cards, string $successMsg = ""): Response
     {
@@ -167,19 +171,29 @@ class OrderController extends AbstractController
 
     /**
      * @Route("/view-orders/{userID}", name="view-orders", defaults={"userID"=-1}, requirements={"userID"="\d+"})
-     * View orders that we have posted
+     * View orders for a given user.
+     * If no userID is specified, then it will pull the logged in user's orders
+     * If a userID is specified, 
      */
     public function viewOrders(Request $request, $userID): Response
     {
+        //Only allow logged in users to see this page
+        if (!$this->getUser()) 
+        {
+             return $this->redirectToRoute('login');
+        }
+
         $pageTitle = "View Orders";
-        //No userID given, check orders for current user
-        if($userID == -1){
+        $yourID = $this->getUser()->getUserId();
+
+        //No userID given or userID belongs to the logged in user. So pull our own orders 
+        if($userID == -1 || $yourID == $userID){
             $userID = $this->getUser()->getUserId();
             $pageTitle = 'Your Orders';
         }
         else
         {
-            //Make sure that our permissions are higher than this users and we area actually allowed to view their orders 
+            //Make sure that our permissions are higher than this users and we are actually allowed to view their orders 
             $user = $this->getDoctrine()->getRepository(Users::class)->find($userID);
 
             //If user wasn't found or we don't have atleast 1 higher permission level, then we can't view their profile
@@ -196,9 +210,10 @@ class OrderController extends AbstractController
 
         $orders = [];
 
-        //Extract all orders for this user into a twig friendly form. Also pull cards for each order
+        //Extract all orders for this user into a twig friendly format. Also pull cards for each order
         foreach($rawOrders as $rawOrder)
         {
+            //Orders array that we are going to pass to twig
             $order = [
                 'id' => $rawOrder->getOrderId(),
                 'cards' => []
@@ -208,6 +223,7 @@ class OrderController extends AbstractController
             $rawCards = $this->getDoctrine()->getRepository(Cards::class)->findBy([
                 'order' => $rawOrder->getOrderId()
             ]);
+            //Extract each card into a twig readable format
             foreach($rawCards as $rawCard)
             {
                 $card = [
@@ -237,7 +253,17 @@ class OrderController extends AbstractController
     }
 
     /**
+    * Return an array of all sports that are options
+    */
+    private function getSports(): array
+    {
+        return ["Football","Baseball","Basketball","Hockey","Soccer"];
+    }
+
+    /**
     * Returns an array of years for the year dropdown
+    * Years are in the form of 2021, 2021-22, etc.
+    * Years start at 1960 and go to 2021
     */
     private function getYears(): array
     {

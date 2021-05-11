@@ -23,8 +23,12 @@ class CreateUserType extends AbstractType
 	    $this->security = $security;
 	}
 
+	//Build create user form
 	public function buildForm(FormBuilderInterface $builder, array $options){
-		//Get list of roles that this user should be able to assign
+		/*
+		* Get list of roles that this user should be able to assign, based on their security level
+		* They should be able to assign every role that is under their level
+		*/
 		$user = $this->security->getUser();
 
 		$roles = ['Customer' => 'ROLE_ROLE'];
@@ -46,7 +50,7 @@ class CreateUserType extends AbstractType
 				'label' => 'Role'
 			]);
 
-		//Transform selected role into an array, which the Users entity uses
+		//Transform selected role into the array form that the Users entity class expects
         $builder->get('roles')
             ->addModelTransformer(new CallbackTransformer(
                 function ($rolesArray) {

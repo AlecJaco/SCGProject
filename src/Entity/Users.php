@@ -95,7 +95,9 @@ class Users implements UserInterface
         return $this;
     }
 
-    /**Return any errors that there are with the password. Returns the error, or an empty string if it is valid 
+    /**
+    * Return any errors that there are with the password. Returns the error, or an empty string if it is valid 
+    * Passwords must be at least 8 characters long, contain 1+ uppercase character, 1+ lowercase character, 1+ number, and 1+ symbol 
     */
     public function checkPassword(): ?string
     {
@@ -229,7 +231,8 @@ class Users implements UserInterface
     }
 
     /*
-    * Get the clearance level for this permission type
+    * Get the clearance level for this permission type in integer form
+    * Used for comparing roles against each other
     */
     public function getPermissionLevel() : int
     {

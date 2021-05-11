@@ -17,6 +17,7 @@ class RegisterController extends AbstractController
 {
 	/**
 	* @Route("/register", name="view register")
+	* Register page. Allows users to signup for an account
 	*/
 	public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder)
 	{
@@ -48,7 +49,7 @@ class RegisterController extends AbstractController
 				//Add normal user role
 				$user->addRole("ROLE_USER");
 				
-				//Check if this user already exists in the database
+				//Check if this email already exists in the database
 				$query =
 					'
 					SELECT 
@@ -70,7 +71,7 @@ class RegisterController extends AbstractController
 					$entityManager->persist($user);
 					$entityManager->flush();
             		
-            		//Log user in
+            		//Automatically logs user in and creates session on register
             		$token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
 			        $this->container->get('security.token_storage')->setToken($token);
 			        $this->container->get('session')->set('_security_main', serialize($token));
