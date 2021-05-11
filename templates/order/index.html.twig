@@ -49,8 +49,8 @@ $(document).ready(function(){
 					<table class="table table-striped table-wrapper-scroll-x" id="cards-table">
 						<thead>
 							<tr>
-								<th>Player</th>
 								<th scope="col-md-2">Sport</th>
+								<th scope="col-md-2">Player</th>
 								<th scope="col-md-2">Year</th>
 								<th scope="col-md-2">Manufacturer</th>
 								<th scope="col-md-1">Card #</th>
@@ -66,13 +66,6 @@ $(document).ready(function(){
 								<tr id="card{{ i }}" class="tr_clone">
 									<td>
 										<div class="form-group">
-											<input type="text" name="playerName[]" class="form-control" 
-											{% if cards is defined %} value="{{ cards[i-1]['playerName'] }}" {% endif %}
-											required>
-										</div>
-									</td>
-									<td>
-										<div class="form-group">
 											<select name="sport[]" class="form-control form-select">
 												{% for sport in sports %}
 													<option value="{{ sport }}"
@@ -83,6 +76,13 @@ $(document).ready(function(){
 												{% endfor %}
 								      		</select>
 							      		</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<input type="text" name="playerName[]" class="form-control" 
+											{% if cards is defined %} value="{{ cards[i-1]['playerName'] }}" {% endif %}
+											required>
+										</div>
 									</td>
 									<td>
 										<div class="form-group">
@@ -133,7 +133,7 @@ $(document).ready(function(){
 									</td>
 									<td>
 										<div class="form-group">
-											<input type="number" name="value[]" min="0" step=".01" class="form-control"
+											<input type="number" name="value[]" min="0" step="1.0" class="form-control"
 											{% if cards is defined %} value="{{ cards[i-1]['value'] }}" {% endif %}
 											required>
 							      		</div>
